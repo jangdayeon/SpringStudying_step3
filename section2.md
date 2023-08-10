@@ -68,4 +68,6 @@
  4. TCP 정보 생성, 메시지 데이터 포함(TCP 프로토콜 사용)
  5. IP 패킷 생성, TCP 데이터 포함(IP 프로토콜 사용)
  6. Ethernet frame을 씌움, IP 데이터 포함하여 LAN카드에서 인터넷을 통해 데이터 전달
+ 7. HTTP 응답 메시지 ('HTTP/1.1 200 OK Content-type:text/html;charset=UTF-8 Content-Length:3423 <html><body></body></html>')를 클라이언트에게 전달
+ 8. 클라이언트는 전달 받은 웹 브라우저 HTML을 렌더링 후 페이지 확인
 
