@@ -1,5 +1,6 @@
 # URI와 웹 브라우저 요청 흐름
-> 요약 :
+> 요약 : URL , URN ⊂ URI이지만, URN은 고정적이라 잘 사용하지 않기 때문에 URL≒URI로 쓰임
+> URL은 scheme, userinfo, host, port, path, query, fragment로 이루어져 있으며 이 정보를 바탕으로 HTTP 요청 메시지를 생성함
 
 ## URI(Uniform Resource Identifier)
  - *URI는 로케이터(Locator), 이름(Name) 또는 둘 다 추가로 분류될 수 있다*
