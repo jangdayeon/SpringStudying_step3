@@ -1,0 +1,60 @@
+# HTTP 메서드 활용
+> 요약 : 클라이언트에서 서버로 데이터를 전송할 때 1.GET을 사용하여 정적 데이터 조회 2.GET, POST를 사용하여 동적 데이터 조회 3.GET, POST를 사용하여 HTML Form을 통한 데이터 전송
+4.POST, PUT, PATCH, GET을 사용하여 HTTP API를 통한 데이터 전송하는 방법이 있다. HTTP API를 통한 데이터 전송방법은 총 3가지로 POST 기반 등록, PUT 기반 등록, HTML FORM 사용하는 방법이 있다. 각각 컬렉션, 스토어, 컨트롤URI 설계 개념을 사용하였다.
+## 클라이언트에서 서버로 데이터 전송
+- ### 데이터 전달 방식은 크게 2가지
+  - 쿼리 파라미터를 통한 데이터 전송 ( GET )
+  - 메시지 바디를 통한 데이터 전송 ( POST, PUT, PATCH )
+- ### 클라이언트에서 서버로 데이터 전송하는 4가지 상황
+  - 정적 데이터 조회
+    - 쿼리 파라미터를 사용하지 않고 GET을 사용하여 이미지나 정적 데이터를 조회하는데 사용
+  - 동적 데이터 조회
+    - 쿼리 파라미터과 함께 GET을 사용하여 주로 필터를 통해 조회할 때 사용 
+  - HTML Form을 통한 데이터 전송
+    - 회원가입, 상품 주문, 데이터 변경할 때 주로 쓰여 POST를 사용하기 때문에 메시지 바디를 통해 데이터를 전송함
+    - 상품조회를 할 때는 GET을 사용하기도 함
+    - *Content-Type: application/x-www-form-urlencoded*는 전송 데이터를 url encoding 처리함
+    - *Content-Type: multipart/form-data*는 파일 업로드 같은 바이너리 데이터 전송시 사용하는데 다른 종류의 여러 파일과 폼의 내용을 함께 전송도 가능
+    - HTML Form 전송은 GET, POST만 지원함
+  - HTTP API를 통한 데이터 전송
+    - 서버 to 서버, 앱 클라이언트, 웹 클라이언트끼리 통신할 때 쓰임
+    - 웹 클라이언트끼리 통신할 때 Form 대신 자바 스크립트로 통신함 (React, VueJs와 같은 웹 클라이언트들과)
+    - POST, PUT, PATCH는 메시지 바디를 통해 데이터 전송하고, GET은 쿼리 파라미터를 이용함
+    - *Content-Type: application/json*을 사실상 표준처럼 사용함 (그 밖에 TEXT, XML, JSON 등등 더 있음)
+## HTTP API 설계 예시
+- ### HTTP API - 컬렉션(서버가 관리하는 리소스 디렉토리로 여기선 /members를 뜻함)
+  - POST 기반 등록
+  - ex - 회원 관리 API 제공
+    - 회원 목록 /members　　　　　->GET
+    - 회원 등록 /members　　　　　->POST
+    - 회원 조회 /members/{id}　　　　　->GET
+    - 회원 수정 /members/{id}　　　　　->PATCH,PUT,POST
+    - 회원 삭제 /members/{id}　　　　　->DELETE
+  - **클라이언트는 등록될 리소스의 URI를 모르고 데이터를 보내면 서버가 새로 등록된 리소스 URI를 생성해줌**
+- ### HTTP API - 스토어(클라이언트가 관리하는 리소스 저장소로 여기선 /files를 뜻함)
+  - PUT 기반 등록
+  - ex - 원격 파일 관리
+    - 파일 목록 /files　　　　　->GET
+    - 파일 조회 /files/{filename}　　　　　->GET
+    - 파일 등록 /files/{filename}　　　　　->PUT
+    - 파일 삭제 /files/{filename}　　　　　->DELETE
+    - 파일 대량 등록 /files　　　　　->POST
+  - **클라이언트가 직접 리소스 URI를 지정**
+- ### HTML FORM 사용
+  - 웹 피이지 회원 관리
+  - GET, POST만 지원
+  - ex - 회원 관리 API 제공
+    - 회원 목록 /members　　　　　->GET
+    - 회원 등록 폼 /members/new　　　　　->GET
+    - 회원 등록 /members/new, /members　　　　　->POST
+    - 회원 조회 /members/{id}　　　　　->GET
+    - 회원 수정 폼 /members/{id}/edit　　　　　->GET
+    - 회원 수정 /members/{id}/edit, /members/{id}　　　　　->POST
+    - 회원 삭제 /members/{id}/delete　　　　　->POST
+  - GET과 POST만 사용하는 제약 때문에 **동사로 된 리소스 경로를 사용함**
+  - 이것이 바로 POST의 **컨트롤 URI**인 **/new, /edit, /delete**임
+- ### 컬렉션, 스토어 외 참고하면 좋은 URI 설계 개념
+  - 문서 : 단일 개념(파일 하나, 객체 인스턴스, 데이터베이스 row) - ex) /members/100, /files/star.jpg
+  - 컬렉션 : 서버가 관리하는 디렉토리로 서버가 리소스 URI를 생성하고 관리함 - ex) /members
+  - 스토어 : 클라이언트가 관리하는 자원 저장소로 클라이언트가 리소스 URI를 알고 관리함 - ex) /files
+  - 컨트롤러, 컨트롤 URI : 문서,컬렉션,스토어로 해결하기 어려운 추가 프로세스 실행할 때 쓰이고 동사를 직접 사용함 - ex) /members/{id}/delete 
